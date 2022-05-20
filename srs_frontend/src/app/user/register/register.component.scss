@@ -1,0 +1,21 @@
+.register_form {
+    margin-top: 50px;
+}
+
+.form {
+    min-width: 60%;
+}
+
+.radio {
+    padding: 5%;
+}
+
+.register_buttons {
+    width: 60%;
+    display: inline-flex;
+    flex-wrap: nowrap;
+    flex-direction: row;
+    align-content: space-around;
+    justify-content: space-between;
+    align-items: center;
+}
