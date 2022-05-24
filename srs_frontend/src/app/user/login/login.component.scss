@@ -1,0 +1,21 @@
+.register_form {
+    margin-top: 50px;
+}
+
+.form {
+    min-width: 50%;
+}
+
+.radio {
+    padding: 0% 5% 5% 5% ;
+}
+
+.login_buttons {
+    width: 50%;
+    display: inline-flex;
+    flex-wrap: nowrap;
+    flex-direction: row;
+    align-content: space-around;
+    justify-content: space-between;
+    align-items: center;
+}

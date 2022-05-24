@@ -5,41 +5,41 @@
             <p>
                 <mat-form-field appearance="fill" class="form">
                     <mat-label>E-Mail</mat-label>
-                    <input matInput placeholder="E-Mail">
+                    <input matInput [formControl]="emailFormControl" placeholder="Bsp. pat@example.com" required>
                 </mat-form-field>
             </p>
             <p>
                 <mat-form-field appearance="fill" class="form">
                     <mat-label>Vorname</mat-label>
-                    <input matInput placeholder="Vorname">
+                    <input matInput [formControl]="nameFormControl" placeholder="Bsp. Max" required>
                 </mat-form-field>
             </p>
             <p>
                 <mat-form-field appearance="fill" class="form">
                     <mat-label>Nachname</mat-label>
-                    <input matInput placeholder="Nachname">
+                    <input matInput [formControl]="surnameFormControl" placeholder="Bsp. Mustermann" required>
                 </mat-form-field>
             </p>
             <p>
                 <mat-form-field appearance="fill" class="form">
                     <mat-label>Passwort</mat-label>
-                    <input matInput type="password">
+                    <input matInput [formControl]="passwordFormControl" type="password" required>
                 </mat-form-field>
             </p>
             <p>
                 <mat-form-field appearance="fill" class="form">
                     <mat-label>Passwort bestätigen</mat-label>
-                    <input matInput type="password">
+                    <input matInput [formControl]="confirmPasswordFormControl" type="password" required>
                 </mat-form-field>
             </p>
-            <mat-radio-group aria-label="Select an option">
-                <mat-radio-button value="Student" class="radio">Ich bin ein Student</mat-radio-button>
-                <mat-radio-button value="Dozent" class="radio">Ich bin ein Dozent</mat-radio-button>
-              </mat-radio-group>
+            <mat-radio-group aria-label="role" [formControl]="roleFormControl">
+                <mat-radio-button value="student" class="radio">Ich bin ein Student</mat-radio-button>
+                <mat-radio-button value="lecturer" class="radio">Ich bin ein Dozent</mat-radio-button>
+            </mat-radio-group>
         </div>
         <div class="register_buttons">
             <button mat-raised-button class="cancel button" routerLink="/">Abbruch</button>
-            <button mat-raised-button class="submit button">Registrieren</button>
+            <button mat-raised-button class="submit button" (click)="register()">Registrieren</button>
         </div>
     </div>
 </mat-card>

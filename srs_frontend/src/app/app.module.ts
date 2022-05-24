@@ -31,6 +31,8 @@ import { TimetableContentComponent } from './timetable-content/timetable-content
 import { CoursesContentComponent } from './courses-content/courses-content.component';
 import {MatFormFieldModule} from '@angular/material/form-field';
 import {MatRadioModule} from '@angular/material/radio';
+import { ReactiveFormsModule } from '@angular/forms';
+import {MatTableModule} from '@angular/material/table';
 
 
 @NgModule({
@@ -67,7 +69,9 @@ import {MatRadioModule} from '@angular/material/radio';
     MatToolbarModule,
     MatListModule,
     MatFormFieldModule,
-    MatRadioModule
+    MatRadioModule,
+    ReactiveFormsModule,
+    MatTableModule
   ],
   providers: [
   ],
