@@ -30,4 +30,9 @@ export class JwtService {
 
     return this.jwtHelperService.isTokenExpired(token);
   }
+
+  deleteToken() {
+    localStorage.removeItem('token');
+  }
+  
 }

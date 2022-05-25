@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { JwtService } from '../services/jwt.service';
 
 @Component({
   selector: 'app-dashboard-content',
@@ -7,9 +8,14 @@ import { Component, OnInit } from '@angular/core';
 })
 export class DashboardContentComponent implements OnInit {
 
-  constructor() { }
+  constructor(private jwtService: JwtService) { }
 
   ngOnInit(): void {
+    this.name;
+  }
+
+  get name() {
+    return this.jwtService.decodeToken().name;
   }
 
 }

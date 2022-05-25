@@ -13,10 +13,11 @@ export class AuthGuard implements CanActivate {
   ) { }
 
   canActivate(): boolean | UrlTree {
-    if (!this.jwtService.isTokenExpired()) {
+    if (!this.jwtService.isTokenExpired() && this.jwtService.getToken != null) {
       return true;
+    } else {
+      this.router.navigate(['/landing']);
+      return false;
     }
-
-    return this.router.parseUrl('');
   }
 }
