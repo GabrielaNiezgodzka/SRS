@@ -49,6 +49,28 @@ app.post("/register", async (req, res) => {
     }
 });
 
+app.post("/addcourse", async (req, res) => {
+        const newCourse = {
+            startTime: {
+                hour: req.body.startTime.hour,
+                minutes: req.body.startTime.minutes
+              },
+              endTime: {
+                hour: req.body.endTime.hour,
+                minutes: req.body.endTime.minutes
+              },
+              startDate: req.body.startDate,
+              endDate: req.body.endDate,
+              day: req.body.day,
+              course: req.body.course,
+              location: req.body.location,
+              lecturer: req.body.lecturer,
+              students: []
+        };
+        await db.courses().insertOne(newCourse);
+        res.sendStatus(200);
+});
+
 function authenticate(req, res, next) {
     let token = req.headers['authorization'];
     if (!token || !token.startsWith('Bearer ')) {

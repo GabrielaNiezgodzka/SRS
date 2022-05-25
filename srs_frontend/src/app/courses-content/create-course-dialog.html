@@ -21,20 +21,53 @@
 <div mat-dialog-content>
     <form class="courses_form" [formGroup]="form">
         <mat-form-field appearance="fill">
-            <input type="text" matInput placeholder="Kursbezeichnung" formControlName="course" required>
+            <input type="text" matInput placeholder="Kursbezeichnung" formControlName="course">
         </mat-form-field>
 
         <mat-form-field appearance="fill">
+            <mat-label>Wochentag</mat-label>
+            <mat-select formControlName="day">
+                <mat-option value="1">Montag</mat-option>
+                <mat-option value="2">Dienstag</mat-option>
+                <mat-option value="3">Mittwoch</mat-option>
+                <mat-option value="4">Donnerstag</mat-option>
+                <mat-option value="5">Freitag</mat-option>
+            </mat-select>
+        </mat-form-field>
+
+        <mat-form-field appearance="fill">
+            <mat-label>Raum</mat-label>
             <input type="text" matInput placeholder="Raum" formControlName="location">
         </mat-form-field>
 
+        <mat-form-field appearance="fill">
+            <mat-label>Uhrzeit Beginn</mat-label>
+            <input type="time" matInput placeholder="Uhrzeit-Start" formControlName="startTime">
+        </mat-form-field>
 
         <mat-form-field appearance="fill">
+            <mat-label>Uhrzeit Ende</mat-label>
+            <input type="time" matInput placeholder="Uhrzeit-Stopp" formControlName="endTime">
+        </mat-form-field>
+
+        <mat-form-field appearance="fill">
+            <mat-label>Zeitraum</mat-label>
+            <mat-date-range-input [rangePicker]="picker">
+                <input matStartDate formControlName="startDate" placeholder="Beginn">
+                <input matEndDate formControlName="endDate" placeholder="Ende">
+            </mat-date-range-input>
+            <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+            <mat-date-range-picker #picker></mat-date-range-picker>
+        </mat-form-field>
+
+
+        <mat-form-field appearance="fill">
+            <mat-label>Leitung</mat-label>
             <input type="text" matInput placeholder="Dozent" formControlName="lecturer">
         </mat-form-field>
     </form>
 </div>
 <div mat-dialog-actions>
     <button mat-button (click)="onNoClick()">Abbrechen</button>
-    <button mat-button cdkFocusInitial>Kurs erstellen</button>
+    <button mat-button (click)="addCourse()">Kurs erstellen</button>
 </div>

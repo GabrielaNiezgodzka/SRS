@@ -2,36 +2,36 @@
     <img src="../../assets/Logo_Provadis_Hochschule.png" class="logo">
     <div id="register_div">
         <form class="register_form" [formGroup]="form" (ngSubmit)="register()">
-            <mat-form-field>
+            <mat-form-field appearance="fill">
                 <input type="email" matInput placeholder="E-Mail" formControlName="email" required>
                 <mat-error *ngIf="email.touched && email.hasError('required')">Email is required</mat-error>
                 <mat-error *ngIf="email.touched && email.hasError('email')">Email must be valid</mat-error>
             </mat-form-field>
 
-            <mat-form-field>
-                <input type="text" matInput placeholder="Name" formControlName="name">
+            <mat-form-field appearance="fill">
+                <input type="text" matInput placeholder="Vorname" formControlName="name" required>
                 <mat-error *ngIf="name.touched && name.hasError('required')">Name is required</mat-error>
             </mat-form-field>
 
 
-            <mat-form-field>
-                <input type="text" matInput placeholder="Surname" formControlName="surname">
+            <mat-form-field appearance="fill">
+                <input type="text" matInput placeholder="Nachname" formControlName="surname" required>
                 <mat-error *ngIf="surname.touched && surname.hasError('required')">Surname is required</mat-error>
             </mat-form-field>
 
-            <mat-form-field>
-                <input type="password" matInput placeholder="Password" formControlName="password">
+            <mat-form-field appearance="fill">
+                <input type="password" matInput placeholder="Password" formControlName="password" required>
                 <mat-error *ngIf="password.touched && password.hasError('required')">Password is required</mat-error>
             </mat-form-field>
 
-            <mat-form-field>
-                <input type="password" matInput placeholder="Password Confirmation" formControlName="confirmPassword">
+            <mat-form-field appearance="fill">
+                <input type="password" matInput placeholder="Password Bestätigen" formControlName="confirmPassword" required>
                 <mat-error *ngIf="confirmPassword.touched && form.hasError('passwordsNotMatching')">
                     Passwords are not matching
                 </mat-error>
             </mat-form-field>
 
-            <mat-radio-group aria-label="role" formControlName="role">
+            <mat-radio-group aria-label="role" formControlName="role" class="role_form">
                 <mat-radio-button value="student" class="radio">Ich bin ein Student</mat-radio-button>
                 <mat-radio-button value="lecturer" class="radio">Ich bin ein Dozent</mat-radio-button>
             </mat-radio-group>

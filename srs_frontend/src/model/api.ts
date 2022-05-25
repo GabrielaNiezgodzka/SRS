@@ -10,13 +10,22 @@ export interface ICourse {
     startDate: string;
     endDate: string;
     day: number;
+    course: string,
+    location: string, 
+    lecturer: string
 }
+
+enum Role {
+    student = "student",
+    lecturer = "lecturer", 
+    admin = "admin"
+  }
 
 export interface IUser {
     email: string;
     name: string;
     surname: string;
-    role: "student" | "lecturer";
+    role: Role;
     activated: boolean;
 }
 
@@ -25,7 +34,7 @@ export interface IRegisterUserData {
     name: string;
     surname: string;
     password: string;
-    role: "student" | "lecturer";
+    role: Role;
 }
 
 export interface ILoginRequest {

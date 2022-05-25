@@ -1,12 +1,12 @@
 .demo-table {
     width: 90%;
+    margin-top: 3vh;
     margin-right: auto;
     margin-left: auto;
   }
   
   .courses-button-container {
     width: 90%;
-    padding-bottom: 20px;
     padding-top: 20px;
     margin-right: auto;
     margin-left: auto;
@@ -14,4 +14,8 @@
   
   .demo-button + .demo-button {
     margin-left: 10px;
+  }
+
+  .mat-column-button {
+    width: 50px;
   }

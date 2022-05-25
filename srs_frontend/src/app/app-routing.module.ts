@@ -15,6 +15,7 @@ const routes: Routes = [
     path: 'dashboard', component: DashboardComponent, canActivate: [AuthGuard], children: [
       { outlet: 'dashboard', path: 'timetable', component: TimetableContentComponent },
       { outlet: 'dashboard', path: 'courses', component: CoursesContentComponent },
+      { outlet: 'dashboard', path: '', component: DashboardContentComponent },
       { outlet: 'dashboard', path: '**', component: DashboardContentComponent },
     ]
   },

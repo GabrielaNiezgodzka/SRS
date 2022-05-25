@@ -18,6 +18,10 @@ export class ApiService {
     return firstValueFrom(this.httpClient.post<ILoginResponse>('http://localhost:3000/register', data));
   }
 
+  addCourse(data: ICourse) {
+    return firstValueFrom(this.httpClient.post('http://localhost:3000/addcourse', data, {observe: 'response', responseType: 'text'}));
+  }
+
   login(data: ILoginRequest) {
     return firstValueFrom(this.httpClient.post<ILoginResponse>('http://localhost:3000/login', data));
   }

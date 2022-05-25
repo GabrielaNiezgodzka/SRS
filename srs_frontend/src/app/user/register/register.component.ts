@@ -53,7 +53,7 @@ export class RegisterComponent {
 
     console.log("user", this.jwtService.decodeToken());
 
-    this.router.navigateByUrl("/dashboard")
+    this.router.navigateByUrl("dashboard")
   }
 
   get email() { return this.form.get('email')!; }
