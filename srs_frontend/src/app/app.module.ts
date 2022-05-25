@@ -26,7 +26,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { JwtModule } from "@auth0/angular-jwt";
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { CoursesContentComponent } from './courses-content/courses-content.component';
+import { CoursesContentComponent, CreateCourseDialog } from './courses-content/courses-content.component';
 import { DashboardContentComponent } from './dashboard-content/dashboard-content.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { LandingPageComponent } from './landing-page/landing-page.component';
@@ -44,6 +44,7 @@ import { RegisterComponent } from './user/register/register.component';
     CoursesContentComponent,
     LoginComponent,
     RegisterComponent,
+    CreateCourseDialog,
   ],
   imports: [
     BrowserModule,
