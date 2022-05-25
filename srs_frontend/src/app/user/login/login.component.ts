@@ -1,11 +1,9 @@
-import { HttpClient } from '@angular/common/http';
-import { Component, OnInit } from '@angular/core';
-import { FormControl, FormGroupDirective, NgForm, Validators } from '@angular/forms';
+import { Component } from '@angular/core';
+import { FormControl, FormGroup, FormGroupDirective, NgForm, Validators } from '@angular/forms';
 import { ErrorStateMatcher } from '@angular/material/core';
 import { Router } from '@angular/router';
-import { firstValueFrom } from 'rxjs';
-import { sha256 } from 'sha.js';
-import { UserService } from 'src/app/services/user.service';
+import { ApiService } from 'src/app/services/api.service';
+import { JwtService } from 'src/app/services/jwt.service';
 
 export class MyErrorStateMatcher implements ErrorStateMatcher {
   isErrorState(control: FormControl | null, form: FormGroupDirective | NgForm | null): boolean {
@@ -22,32 +20,36 @@ export class MyErrorStateMatcher implements ErrorStateMatcher {
 
 export class LoginComponent {
 
-  emailFormControl = new FormControl('', [Validators.required, Validators.email]);
-  passwordFormControl = new FormControl('', [Validators.required, Validators.minLength(8)]);
-  matcher = new MyErrorStateMatcher();
+  form = new FormGroup({
+    email: new FormControl('', [Validators.required, Validators.email,]),
+    password: new FormControl('', [Validators.required,]),
+  });
 
-  constructor(private httpClient: HttpClient, private router: Router, private userService: UserService) { }
+  constructor(
+    private apiService: ApiService,
+    private jwtService: JwtService,
+    private router: Router
+  ) { }
 
   async login() {
-    const hasher = new sha256();
-    const password = this.passwordFormControl.value;
-    const hashedPassword = hasher.update(password).digest('hex');
+    if (!this.form.valid) return;
 
-    if (this.emailFormControl.valid && this.passwordFormControl.valid) {
-      let user: any = await firstValueFrom(this.httpClient.get('http://localhost:3000/user/' + this.emailFormControl.value));
-      this.userService.user = {
-        ...user
-      }
-      if (this.userService.user.password === hashedPassword) {
-        if (user.role === "lecturer" && user.activated == false) {
-          this.router.navigateByUrl("/users/dashboard")
-        } else {
-          this.router.navigateByUrl("/users/user-info")
-        }
-      } else {
-        return console.error('passwort ist falsch');
-      }
+    try {
+      const result = await this.apiService.login({
+        email: this.form.value.email,
+        password: this.form.value.password,
+      });
+      this.jwtService.saveToken(result.token);
+      const user = this.jwtService.decodeToken();
+      console.log("user", user);
+      // if (user.role === "lecturer" && user.activated == false) {
+      //   this.router.navigateByUrl("/users/dashboard")
+      // } else {
+      //   this.router.navigateByUrl("/users/user-info")
+      // }
+      this.router.navigateByUrl("dashboard");
+    } catch (error) {
+      return console.error('passwort ist falsch');
     }
   }
-
 }

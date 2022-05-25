@@ -1,19 +1,9 @@
-import { HttpClient } from '@angular/common/http';
-import { Component, OnInit } from '@angular/core';
-import { ErrorStateMatcher } from '@angular/material/core';
+import { Component } from '@angular/core';
+import { AbstractControl, FormControl, FormGroup, ValidationErrors, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { sha256 } from 'sha.js';
-import { firstValueFrom } from 'rxjs';
-import { UserService } from 'src/app/services/user.service';
-import { FormControl, FormGroupDirective, NgForm, Validators } from '@angular/forms';
-
-/** Error when invalid control is dirty, touched, or submitted. */
-export class MyErrorStateMatcher implements ErrorStateMatcher {
-  isErrorState(control: FormControl | null, form: FormGroupDirective | NgForm | null): boolean {
-    const isSubmitted = form && form.submitted;
-    return !!(control && control.invalid && (control.dirty || control.touched || isSubmitted));
-  }
-}
+import { ApiService } from 'src/app/services/api.service';
+import { JwtService } from 'src/app/services/jwt.service';
+import { IRegisterUserData } from 'src/model/api';
 
 @Component({
   selector: 'app-register',
@@ -22,59 +12,54 @@ export class MyErrorStateMatcher implements ErrorStateMatcher {
 })
 export class RegisterComponent {
 
-  emailFormControl = new FormControl('', [Validators.required, Validators.email]);
-  nameFormControl = new FormControl('', [Validators.required, Validators.minLength(3)]);
-  surnameFormControl = new FormControl('', [Validators.required, Validators.minLength(3)]);
-  passwordFormControl = new FormControl('', Validators.compose([Validators.required, Validators.minLength(8)]));
-  confirmPasswordFormControl = new FormControl('', Validators.compose([Validators.required, Validators.minLength(8)]));
-  roleFormControl = new FormControl('', [Validators.required]);
-  matcher = new MyErrorStateMatcher();
-
-  samePassword(control: FormControl): boolean {
-    const password = this.passwordFormControl.value;
-    const controlValue = control.value
-
-    if (password !== controlValue) {
-      return false;
-    } else {
-      return true;
-    }
-  }
+  form = new FormGroup(
+    {
+      email: new FormControl('', [Validators.required, Validators.email]),
+      name: new FormControl('', [Validators.required, Validators.minLength(3)]),
+      surname: new FormControl('', [Validators.required, Validators.minLength(3)]),
+      password: new FormControl('', [Validators.required, Validators.minLength(8)]),
+      confirmPassword: new FormControl('', [Validators.required, Validators.minLength(8)]),
+      role: new FormControl('', [Validators.required]),
+    },
+    { validators: this.checkPasswords },
+  );
 
 
-  constructor(private httpClient: HttpClient, private router: Router, private userService: UserService) { }
+  constructor(
+    private apiService: ApiService,
+    private jwtService: JwtService,
+    private router: Router,
+  ) { }
 
-  sleep(millis: number) {
-    return new Promise<void>(resolve => {
-      setTimeout(() => resolve(), millis);
-    });
+  checkPasswords(group: AbstractControl): ValidationErrors | null {
+    let pass = group.get('password')!.value;
+    let confirmPass = group.get('confirmPassword')!.value;
+    return pass === confirmPass ? null : { passwordsNotMatching: true };
   }
 
   async register() {
-    const name = this.nameFormControl.value;
-    const surname = this.surnameFormControl.value;
-    const email = this.emailFormControl.value;
-    const password = this.confirmPasswordFormControl.value;
-    const role = this.roleFormControl.value;
-    
+    if (!this.form.valid) return;
 
-    const hasher = new sha256();
-    const hashedPassword = hasher.update(password).digest("hex")
+    const user: IRegisterUserData = {
+      email: this.form.value.email,
+      name: this.form.value.name,
+      surname: this.form.value.surname,
+      password: this.form.value.password,
+      role: this.form.value.role
+    };
 
-    this.userService.user = {
-      "password": hashedPassword,
-      "name": name,
-      "surname": surname,
-      "email": email,
-      "role": role,
-      "activated": false
-    }
+    const response = await this.apiService.register(user);
+    this.jwtService.saveToken(response.token);
 
-    if (this.emailFormControl.valid && this.nameFormControl.valid && this.passwordFormControl.valid && this.confirmPasswordFormControl.value === this.passwordFormControl.value) {
-      await firstValueFrom(this.httpClient.post('http://localhost:3000/user', this.userService.user));
-      this.router.navigateByUrl("/dashboard")
-    } else
-      console.error('irgendwas stimmt nicht!');
-  };
+    console.log("user", this.jwtService.decodeToken());
 
+    this.router.navigateByUrl("/dashboard")
+  }
+
+  get email() { return this.form.get('email')!; }
+  get name() { return this.form.get('name')!; }
+  get surname() { return this.form.get('surname')!; }
+  get password() { return this.form.get('password')!; }
+  get confirmPassword() { return this.form.get('confirmPassword')!; }
+  get role() { return this.form.get('role')!; }
 }

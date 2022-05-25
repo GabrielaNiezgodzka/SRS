@@ -1,0 +1,40 @@
+<style>
+  .courses_form {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    align-content: center;
+    justify-content: center;
+    align-items: stretch;
+  }
+
+  .mat-dialog-actions {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    align-content: center;
+    justify-content: space-evenly;
+    align-items: center;
+  }
+</style>
+<h1 mat-dialog-title>Kurs erstellen</h1>
+<div mat-dialog-content>
+  <form class="courses_form" [formGroup]="form">
+    <mat-form-field appearance="fill">
+      <input type="text" matInput placeholder="Kursbezeichnung" formControlName="course" required>
+    </mat-form-field>
+
+    <mat-form-field appearance="fill">
+      <input type="text" matInput placeholder="Raum" formControlName="location">
+    </mat-form-field>
+
+
+    <mat-form-field appearance="fill">
+      <input type="text" matInput placeholder="Dozent" formControlName="lecturer">
+    </mat-form-field>
+  </form>
+</div>
+<div mat-dialog-actions>
+  <button mat-button (click)="onNoClick()">Abbrechen</button>
+  <button mat-button cdkFocusInitial>Kurs erstellen</button>
+</div>

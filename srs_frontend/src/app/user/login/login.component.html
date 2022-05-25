@@ -2,17 +2,17 @@
     <img src="../../assets/Logo_Provadis_Hochschule.png" class="logo">
     <div id="register_div">
         <div class="register_form">
-            <form class="login_form">
+            <form class="login_form" [formGroup]="form">
                 <p>
                     <mat-form-field appearance="fill" class="form">
                         <mat-label>E-Mail</mat-label>
-                        <input matInput [formControl]="emailFormControl" placeholder="Bsp. pat@example.com" required>
+                        <input matInput formControlName="email" placeholder="Bsp. pat@example.com" required>
                     </mat-form-field>
                 </p>
                 <p>
                     <mat-form-field appearance="fill" class="form">
                         <mat-label>Passwort</mat-label>
-                        <input matInput [formControl]="passwordFormControl" type="password" required>
+                        <input matInput formControlName="password" type="password" required>
                     </mat-form-field>
                 </p>
             </form>

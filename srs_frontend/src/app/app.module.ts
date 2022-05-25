@@ -28,11 +28,12 @@ import { MatToolbarModule } from "@angular/material/toolbar";
 import { MatListModule } from "@angular/material/list";
 import { DashboardContentComponent } from './dashboard-content/dashboard-content.component';
 import { TimetableContentComponent } from './timetable-content/timetable-content.component';
-import { CoursesContentComponent } from './courses-content/courses-content.component';
+import { CoursesContentComponent, CreateCourseDialog } from './courses-content/courses-content.component';
 import {MatFormFieldModule} from '@angular/material/form-field';
 import {MatRadioModule} from '@angular/material/radio';
 import { ReactiveFormsModule } from '@angular/forms';
 import {MatTableModule} from '@angular/material/table';
+import { JwtModule } from "@auth0/angular-jwt";
 
 
 @NgModule({
@@ -45,6 +46,7 @@ import {MatTableModule} from '@angular/material/table';
     DashboardContentComponent,
     TimetableContentComponent,
     CoursesContentComponent,
+    CreateCourseDialog
   ],
   imports: [
     BrowserModule,
@@ -71,7 +73,13 @@ import {MatTableModule} from '@angular/material/table';
     MatFormFieldModule,
     MatRadioModule,
     ReactiveFormsModule,
-    MatTableModule
+    MatTableModule,
+    JwtModule.forRoot({
+      config: {
+        tokenGetter: () => localStorage.getItem('token'),
+        allowedDomains: ['localhost:3000'],
+      },
+    }),
   ],
   providers: [
   ],
