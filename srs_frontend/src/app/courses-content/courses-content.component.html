@@ -55,10 +55,10 @@
                 <mat-icon>more_vert</mat-icon>
               </button>
               <mat-menu #menu="matMenu">
-                <button mat-menu-item>
+                <button mat-menu-item (click)="updateCourse(element)">
                   <span>Kurs bearbeiten</span>
                 </button>
-                <button mat-menu-item>
+                <button mat-menu-item (click)="deleteCourse(element)">
                   <span>Kurs löschen</span>
                 </button>
               </mat-menu>

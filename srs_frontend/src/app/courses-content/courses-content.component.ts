@@ -81,43 +81,80 @@ export class CoursesContentComponent implements OnInit {
   async addStudentToCourse(row: any) {
     let studentMail = this.email;
     let courseID = row._id;
+    let message = ""
     let studentData = {
       _id: courseID,
       student: studentMail
     };
 
+    message = "Sie wurden erfolgreich für den Kurs " + row.course + " angemeldet!";
     await this.apiService.addStudent(studentData)
-    .then(() => 
-    this.openGreenSnackBar(row.course))
-    .catch((error) => {
+      .then(() =>
+        this.openSnackBar(message, "green-snack-bar"))
+      .catch((error) => {
         console.log(error);
-        this.openYellowSnackBar(row.course);
-    });
+        message = "Sie sind bereits für den Kurs " + row.course + " angemeldet!";
+        this.openSnackBar(message, "yellow-snack-bar");
+      });
+    this.reloadTable();
   }
 
   async reloadTable() {
     this.dataSource = await this.apiService.getCourses();
   }
 
-  openGreenSnackBar(courseName: string) {
-    const message = "Sie wurden erfolgreich für den Kurs " + courseName + " angemeldet!";
+
+  openSnackBar(message: string, colorClass: string) {
     this._snackBar.open(message, '', {
       horizontalPosition: 'center',
       verticalPosition: 'top',
       duration: 3000,
-      panelClass: ['green-snack-bar']
+      panelClass: [colorClass]
     });
+  }
+
+  async deleteCourse(row: any) {
+    let courseID = row._id;
+    let message = "Der Kurs " + row.course + " wurde erfolgreich gelöscht!";
+    let course = {
+      _id: courseID
+    }
+    await this.apiService.deleteCourse(course).then(() =>
+      this.openSnackBar(message, "green-snack-bar"))
+      .catch((error) => {
+        console.log(error);
+        message = "Irgendwas ist schief gelaufen";
+        this.openSnackBar(message, "red-snack-bar");
+      });
+
+    this.sendEmailOnChange(row, true);
     this.reloadTable();
   }
 
-  openYellowSnackBar(courseName: string) {
-    const message = "Sie sind bereits für den Kurs " + courseName + " angemeldet!";
-    this._snackBar.open(message, '', {
-      horizontalPosition: 'center',
-      verticalPosition: 'top',
-      duration: 3000,
-      panelClass: ['green-snack-bar']
-    });
+  updateCourse(row: any) {
+    //To Do
+  }
+
+  async sendEmailOnChange(row: any, deleted: boolean) {
+    let courseName = row.course;
+    let courseStudentsList = row.students;
+    let courseLecturer = row.lecturer;
+    let subject = "Uni - Informationen bezüglich eines Kurses";
+    let message = "";
+
+    if (deleted = true) {
+      message = "Hallo, Dein Kurs mit der Bezeichnung: '" + courseName + "', geleitet von: " + courseLecturer + " wurde gelöscht. Für mehr Informationen wende dich an sekretariat@uni.de"
+    } else {
+      message = "Hallo, es gibt Änderungen bei deinem Kurs. Hier sind die Informationen: ..."
+    }
+
+    const messageData = {
+      studentsMails: courseStudentsList, 
+      subject: subject,
+      message: message
+    }
+
+    await this.apiService.sendEmail();
   }
 }
 

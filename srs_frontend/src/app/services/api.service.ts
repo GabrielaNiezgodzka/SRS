@@ -22,6 +22,14 @@ export class ApiService {
     return firstValueFrom(this.httpClient.post('http://localhost:3000/addcourse', data, {observe: 'response', responseType: 'text'}));
   }
 
+  deleteCourse(data: any) {
+    return firstValueFrom(this.httpClient.post('http://localhost:3000/deletecourse', data, {observe: 'response', responseType: 'text'}));
+  }
+
+  sendEmail() {
+    return firstValueFrom(this.httpClient.post('http://localhost:3000/sendemail', {observe: 'response', responseType: 'text'}));
+  }
+
   addStudent(data: any) {
     return firstValueFrom(this.httpClient.post('http://localhost:3000/addstudent', data, {observe: 'response', responseType: 'text'}));
   }
