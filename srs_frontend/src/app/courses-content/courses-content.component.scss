@@ -19,3 +19,8 @@
   .mat-column-button {
     width: 50px;
   }
+
+  ::ng-deep .green-snack-bar {
+    background-color: #b5e48c;
+    color: #0000008a;
+  }

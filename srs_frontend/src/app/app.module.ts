@@ -33,6 +33,8 @@ import { LandingPageComponent } from './landing-page/landing-page.component';
 import { TimetableContentComponent } from './timetable-content/timetable-content.component';
 import { LoginComponent } from './user/login/login.component';
 import { RegisterComponent } from './user/register/register.component';
+import { UsersContentComponent } from './user/users-content/users-content.component';
+import {MatSnackBarModule} from '@angular/material/snack-bar';
 
 @NgModule({
   declarations: [
@@ -45,6 +47,7 @@ import { RegisterComponent } from './user/register/register.component';
     LoginComponent,
     RegisterComponent,
     CreateCourseDialog,
+    UsersContentComponent,
   ],
   imports: [
     BrowserModule,
@@ -72,6 +75,7 @@ import { RegisterComponent } from './user/register/register.component';
     MatRadioModule,
     ReactiveFormsModule,
     MatTableModule,
+    MatSnackBarModule,
     JwtModule.forRoot({
       config: {
         tokenGetter: () => localStorage.getItem('token'),

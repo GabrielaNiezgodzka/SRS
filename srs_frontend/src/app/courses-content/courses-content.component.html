@@ -42,12 +42,12 @@
     </ng-container>
 
     <ng-container matColumnDef="button">
-        <th mat-header-cell *matHeaderCellDef></th>
+        <th mat-header-row *matHeaderCellDef></th>
         <td mat-cell *matCellDef="let element">
             <button mat-raised-button disabled *ngIf="role=='student' && element.students.length >= 20">
                 Einschreiben
             </button>
-            <button mat-raised-button color="primary" *ngIf="role=='student' && element.students.length < 20">
+            <button mat-raised-button color="primary" *ngIf="role=='student' && element.students.length < 20" (click)="addStudentToCourse(element)">
                 Einschreiben
             </button>
 

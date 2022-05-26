@@ -1,9 +1,11 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, Inject, OnInit, ViewChild } from '@angular/core';
 import { ICourse } from 'src/model/api';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { ApiService } from '../services/api.service';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { JwtService } from '../services/jwt.service';
+import { MatSnackBar, MatSnackBarConfig } from '@angular/material/snack-bar';
+import { MatTable } from '@angular/material/table';
 
 export interface DialogData {
   course: string;
@@ -21,23 +23,24 @@ export class CoursesContentComponent implements OnInit {
 
   displayedColumns: string[] = ['course', 'day', 'time', 'location', 'timeperiod', 'lecturer', 'students', 'button'];
   dataSource: ICourse[] = [];
+  clickedRows = new Set<ICourse>();
   course: string = "";
   day: number = 0;
   location: string = "";
   lecturer: string = "";
 
-  constructor(private apiService: ApiService, public dialog: MatDialog, private jwtService: JwtService) { }
+  constructor(private apiService: ApiService, public dialog: MatDialog, private jwtService: JwtService, private _snackBar: MatSnackBar) { }
 
   get role() {
     return this.jwtService.decodeToken().role;
   }
 
+  get email() {
+    return this.jwtService.decodeToken().email;
+  }
+
   async ngOnInit(): Promise<void> {
     this.dataSource = await this.apiService.getCourses();
-
-    console.log(this.dataSource);
-    console.log(this.role);
-    
   }
 
   openDialog(): void {
@@ -74,7 +77,50 @@ export class CoursesContentComponent implements OnInit {
     let endDate = new Date(course.endDate).toLocaleDateString("de-DE");
     return startDate + " - " + endDate;
   }
+
+  async addStudentToCourse(row: any) {
+    let studentMail = this.email;
+    let courseID = row._id;
+    let studentData = {
+      _id: courseID,
+      student: studentMail
+    };
+
+    await this.apiService.addStudent(studentData)
+    .then(() => 
+    this.openGreenSnackBar(row.course))
+    .catch((error) => {
+        console.log(error);
+        this.openYellowSnackBar(row.course);
+    });
+  }
+
+  async reloadTable() {
+    this.dataSource = await this.apiService.getCourses();
+  }
+
+  openGreenSnackBar(courseName: string) {
+    const message = "Sie wurden erfolgreich für den Kurs " + courseName + " angemeldet!";
+    this._snackBar.open(message, '', {
+      horizontalPosition: 'center',
+      verticalPosition: 'top',
+      duration: 3000,
+      panelClass: ['green-snack-bar']
+    });
+    this.reloadTable();
+  }
+
+  openYellowSnackBar(courseName: string) {
+    const message = "Sie sind bereits für den Kurs " + courseName + " angemeldet!";
+    this._snackBar.open(message, '', {
+      horizontalPosition: 'center',
+      verticalPosition: 'top',
+      duration: 3000,
+      panelClass: ['green-snack-bar']
+    });
+  }
 }
+
 
 @Component({
   selector: 'create-course-dialog',
@@ -125,7 +171,7 @@ export class CreateCourseDialog {
 
     await this.apiService.addCourse(course);
     this.dialogRef.close();
-    window.location.reload();    
+    window.location.reload();
   }
 
   constructor(

@@ -23,6 +23,10 @@ export class DashboardComponent implements OnDestroy {
     this.mobileQuery.removeListener(this._mobileQueryListener);
   }
 
+  get role() {
+    return this.jwtService.decodeToken().role;
+  }
+
   logout() {
     this.jwtService.deleteToken();
     this.router.navigateByUrl("landing");

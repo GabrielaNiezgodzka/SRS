@@ -10,8 +10,9 @@
                    [fixedInViewport]="mobileQuery.matches" fixedTopGap="56">
         <mat-nav-list>
           <a mat-list-item [routerLink]="[{ outlets: { dashboard: [''] } }]">Übersicht</a>
-          <a mat-list-item [routerLink]="[{ outlets: { dashboard: ['timetable'] } }]">Stundenplan</a>
+          <a mat-list-item [routerLink]="[{ outlets: { dashboard: ['timetable'] } }]" *ngIf="role == 'student' || role == 'lecturer' ">Stundenplan</a>
           <a mat-list-item [routerLink]="[{ outlets: { dashboard: ['courses'] } }]">Kursliste</a>
+          <a mat-list-item [routerLink]="[{ outlets: { dashboard: ['users'] } }]" *ngIf="role == 'admin'">Nutzer</a>
           <a mat-list-item id="logout" (click)="logout()">Abmelden</a>
         </mat-nav-list>
       </mat-sidenav>

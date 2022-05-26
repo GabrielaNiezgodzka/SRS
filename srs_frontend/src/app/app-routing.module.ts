@@ -8,6 +8,7 @@ import { LandingPageComponent } from './landing-page/landing-page.component';
 import { TimetableContentComponent } from './timetable-content/timetable-content.component';
 import { LoginComponent } from './user/login/login.component';
 import { RegisterComponent } from './user/register/register.component';
+import { UsersContentComponent } from './user/users-content/users-content.component';
 
 const routes: Routes = [  
   { path: 'landing', component: LandingPageComponent },
@@ -15,6 +16,7 @@ const routes: Routes = [
     path: 'dashboard', component: DashboardComponent, canActivate: [AuthGuard], children: [
       { outlet: 'dashboard', path: 'timetable', component: TimetableContentComponent },
       { outlet: 'dashboard', path: 'courses', component: CoursesContentComponent },
+      { outlet: 'dashboard', path: 'users', component: UsersContentComponent},
       { outlet: 'dashboard', path: '', component: DashboardContentComponent },
       { outlet: 'dashboard', path: '**', component: DashboardContentComponent },
     ]
