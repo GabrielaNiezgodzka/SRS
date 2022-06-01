@@ -1,4 +1,8 @@
 <div class="time_table_container">
-    <mwl-calendar-week-view [viewDate]="viewDate" [events]="events" [dayStartHour]="7" [dayEndHour]="20">
+    <div class="button-container">
+        <button mat-raised-button (click)="previousWeek()">letzte Woche</button>
+        <button mat-raised-button (click)="nextWeek()">nächste Woche</button>
+    </div>
+    <mwl-calendar-week-view [viewDate]="viewDate" [events]="events" [dayStartHour]="7" [dayEndHour]="18" class="calendar">
     </mwl-calendar-week-view>
 </div>

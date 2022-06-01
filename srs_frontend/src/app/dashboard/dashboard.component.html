@@ -13,7 +13,7 @@
           <a mat-list-item [routerLink]="[{ outlets: { dashboard: ['timetable'] } }]" *ngIf="role == 'student' || role == 'lecturer' ">Stundenplan</a>
           <a mat-list-item [routerLink]="[{ outlets: { dashboard: ['courses'] } }]">Kursliste</a>
           <a mat-list-item [routerLink]="[{ outlets: { dashboard: ['users'] } }]" *ngIf="role == 'admin'">Nutzer</a>
-          <a mat-list-item position="end" (click)="logout()">Abmelden</a>
+          <a mat-list-item style="position: absolute;bottom: 20px;" (click)="logout()">Abmelden</a>
         </mat-nav-list>
       </mat-sidenav>
   

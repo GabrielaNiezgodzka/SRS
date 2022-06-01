@@ -74,7 +74,7 @@ api.post("/deletecourse", async (req, res) => {
     res.send({});
 });
 
-api.post("/getcoursesforuser", async (req, res) => {
+api.get("/getcoursesforuser", async (req, res) => {
     const studentMail = req.decodedJwt.email;
     res.send(await db.courses().find({ students: studentMail }).toArray());
 });

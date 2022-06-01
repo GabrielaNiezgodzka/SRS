@@ -1,9 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { JwtHelperService } from '@auth0/angular-jwt';
 import { CalendarEvent } from 'angular-calendar';
-import { ICourse, IUser } from 'src/model/api';
+import { ICourse } from 'src/model/api';
 import { ApiService } from '../services/api.service';
-import { JwtService } from '../services/jwt.service';
 
 @Component({
   selector: 'app-timetable-content',
@@ -16,13 +14,55 @@ export class TimetableContentComponent implements OnInit {
   events: CalendarEvent[] = [];
   courses: ICourse[] = [];
 
-  constructor(private apiService: ApiService, private jwtService: JwtService) { }
+  constructor(private apiService: ApiService) { }
 
   async ngOnInit(): Promise<void> {
-    this.courses = await this.apiService.getCoursesForUser(this.jwtService.getToken);
-    for (const course of this.courses) {
-      
-    }
+    this.courses = await this.apiService.getCoursesForUser();
+    this.updateEvents();
+  }
 
+  previousWeek(): void {
+    this.viewDate = new Date(this.viewDate.getTime() - 7 * 24 * 60 * 60 * 1000);
+    this.updateEvents();
+  }
+
+  nextWeek(): void {
+    this.viewDate = new Date(this.viewDate.getTime() + 7 * 24 * 60 * 60 * 1000);
+    this.updateEvents();
+  }
+
+  weekStart(date: Date): Date {
+    return new Date(date.getTime() - date.getDay() * 24 * 60 * 60 * 1000);
+  }
+
+  updateEvents(): void {
+    this.events = [];
+    for (const course of this.courses) {
+      const courseStartDate = this.weekStart(this.viewDate);
+      courseStartDate.setDate(courseStartDate.getDate() + course.day);
+      courseStartDate.setHours(course.startTime.hour);
+      courseStartDate.setMinutes(course.startTime.minutes);
+      courseStartDate.setSeconds(0);
+      courseStartDate.setMilliseconds(0);
+
+      if (courseStartDate.getTime() < new Date(course.startDate).getTime()
+        || courseStartDate.getTime() > new Date(course.endDate).getTime()) {
+        continue;
+      }
+
+      const courseEndDate = new Date(courseStartDate.getTime());
+      courseEndDate.setHours(course.endTime.hour);
+      courseEndDate.setMinutes(course.endTime.minutes);
+
+      this.events.push({
+        title: course.course,
+        start: courseStartDate,
+        end: courseEndDate,
+        color: {
+          primary: '#e3bc08',
+          secondary: '#FDF1BA'
+        }
+      });
+    }
   }
 }
