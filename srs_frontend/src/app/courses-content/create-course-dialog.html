@@ -17,7 +17,8 @@
         align-items: center;
     }
 </style>
-<h1 mat-dialog-title>Kurs erstellen</h1>
+<h1 mat-dialog-title *ngIf="!edit">Kurs erstellen</h1>
+<h1 mat-dialog-title *ngIf="edit">Kurs bearbeiten</h1>
 <div mat-dialog-content>
     <form class="courses_form" [formGroup]="form">
         <mat-form-field appearance="fill">
@@ -27,11 +28,11 @@
         <mat-form-field appearance="fill">
             <mat-label>Wochentag</mat-label>
             <mat-select formControlName="day">
-                <mat-option value="1">Montag</mat-option>
-                <mat-option value="2">Dienstag</mat-option>
-                <mat-option value="3">Mittwoch</mat-option>
-                <mat-option value="4">Donnerstag</mat-option>
-                <mat-option value="5">Freitag</mat-option>
+                <mat-option [value]="1">Montag</mat-option>
+                <mat-option [value]="2">Dienstag</mat-option>
+                <mat-option [value]="3">Mittwoch</mat-option>
+                <mat-option [value]="4">Donnerstag</mat-option>
+                <mat-option [value]="5">Freitag</mat-option>
             </mat-select>
         </mat-form-field>
 
@@ -69,5 +70,6 @@
 </div>
 <div mat-dialog-actions>
     <button mat-button (click)="onNoClick()">Abbrechen</button>
-    <button mat-button (click)="addCourse()">Kurs erstellen</button>
+    <button mat-button *ngIf="!edit" (click)="addCourse()">Kurs erstellen</button>
+    <button mat-button *ngIf="edit" (click)="editCourse()">Kurs bearbeiten</button>
 </div>

@@ -6,12 +6,10 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { JwtService } from '../services/jwt.service';
 import { MatSnackBar, MatSnackBarConfig } from '@angular/material/snack-bar';
 import { MatTable } from '@angular/material/table';
+import { RowContext } from '@angular/cdk/table';
 
 export interface DialogData {
-  course: string;
-  day: number;
-  location: string;
-  lecturer: string;
+  edit: ICourse | null;
 }
 
 @Component({
@@ -46,13 +44,18 @@ export class CoursesContentComponent implements OnInit {
   openDialog(): void {
 
     const dialogRef = this.dialog.open(CreateCourseDialog, {
-      width: '450px',
-      data: { course: this.course, day: this.day, location: this.location, lecturer: this.lecturer },
+      width: '450px'
     });
 
     dialogRef.afterClosed().subscribe(result => {
-      console.log('The dialog was closed');
       this.course = result;
+    });
+  }
+
+  openEditDialog(row: ICourse) {
+    this.dialog.open(CreateCourseDialog, {
+      width: '450px',
+      data: { edit: row } as DialogData,
     });
   }
 
@@ -127,34 +130,30 @@ export class CoursesContentComponent implements OnInit {
         this.openSnackBar(message, "red-snack-bar");
       });
 
-    this.sendEmailOnChange(row, true);
+    this.sendEmailOnDelete(row);
     this.reloadTable();
   }
 
-  updateCourse(row: any) {
-    //To Do
-  }
 
-  async sendEmailOnChange(row: any, deleted: boolean) {
+  async sendEmailOnDelete(row: any) {
     let courseName = row.course;
     let courseStudentsList = row.students;
+    let day = this.formatDay(row);
+    let location = row.location;
+    let time = this.formatTime(row)
+    let date = new Date(row.startDate).toLocaleDateString("de-DE") + " - " + new Date(row.endDate).toLocaleDateString("de-DE");
     let courseLecturer = row.lecturer;
-    let subject = "Uni - Informationen bezüglich eines Kurses";
-    let message = "";
 
-    if (deleted = true) {
-      message = "Hallo, Dein Kurs mit der Bezeichnung: '" + courseName + "', geleitet von: " + courseLecturer + " wurde gelöscht. Für mehr Informationen wende dich an sekretariat@uni.de"
-    } else {
-      message = "Hallo, es gibt Änderungen bei deinem Kurs. Hier sind die Informationen: ..."
-    }
+    let subject = "Email aus der Uni - eine deiner Kurse wurde abgesagt";
+    let html = "<h3>Hallo, einer deiner Kurse wurde gelöscht.</h3> <p>Hier sind die Informationen:</p> <p>Kursbezeichnung: " + courseName + "</p> <p>Wochentag: " + day + "</p> <p> Uhrzeit: " + time + "</p> <p> Ort: " + location + "</p> <p> Zeitraum: " + date + "</p> <p> Leitung: " + courseLecturer + "</p> <br> <p>Für mehr Informationen wende dich an sekretariat@uni.de</p>"
 
     const messageData = {
-      studentsMails: courseStudentsList, 
+      studentsMails: courseStudentsList,
       subject: subject,
-      message: message
+      html: html
     }
 
-    await this.apiService.sendEmail();
+    await this.apiService.sendEmail(messageData);
   }
 }
 
@@ -177,6 +176,7 @@ export class CreateCourseDialog {
       lecturer: new FormControl('', [Validators.required, Validators.minLength(3)]),
     }
   );
+  edit: boolean = false;
 
   async addCourse() {
     let startArr = this.form.value.startTime.split(':');
@@ -203,7 +203,8 @@ export class CreateCourseDialog {
       day: this.form.value.day,
       course: this.form.value.course,
       location: this.form.value.location,
-      lecturer: this.form.value.lecturer
+      lecturer: this.form.value.lecturer,
+      students: []
     };
 
     await this.apiService.addCourse(course);
@@ -215,9 +216,89 @@ export class CreateCourseDialog {
     public dialogRef: MatDialogRef<CreateCourseDialog>,
     @Inject(MAT_DIALOG_DATA) public data: DialogData,
     private apiService: ApiService,
-  ) { }
+  ) {
+    if (data?.edit) {
+      this.edit = true;
+      const { _id, students, ...rest } = data.edit as any;
+      rest.startTime = this.formatTime(rest.startTime);
+      rest.endTime = this.formatTime(rest.endTime);
+      rest.startDate = new Date(rest.startDate);
+      rest.endDate = new Date(rest.endDate);
+      this.form.setValue(rest);
+    }
+  }
+
+  formatTime(time: any) {
+    let hour: number = time.hour;
+    let minute: number = time.minutes;
+    return hour.toString().padStart(2, "0") + ":" + minute.toString().padStart(2, "0");
+  }
+
+  async editCourse() {
+    let startArr = this.form.value.startTime.split(':');
+    let startHour = parseInt(startArr[0]);
+    let startMin = parseInt(startArr[1]);
+
+    let endArr = this.form.value.endTime.split(':');
+    let endHour = parseInt(endArr[0]);
+    let endMin = parseInt(endArr[1]);
+
+    if (!this.form.valid) return;
+
+    const course: ICourse = {
+      _id: this.data.edit?._id,
+      startTime: {
+        hour: startHour,
+        minutes: startMin
+      },
+      endTime: {
+        hour: endHour,
+        minutes: endMin,
+      },
+      startDate: this.form.value.startDate.toISOString(),
+      endDate: this.form.value.endDate.toISOString(),
+      day: this.form.value.day,
+      course: this.form.value.course,
+      location: this.form.value.location,
+      lecturer: this.form.value.lecturer,
+      students: this.data.edit?.students
+    };
+
+    await this.apiService.editCourse(course);
+    this.sendEmailOnChange(course);
+    this.dialogRef.close();
+    //window.location.reload();
+  }
+
+  async sendEmailOnChange(row: ICourse) {
+    let courseName = row.course;
+    let courseStudentsList = row.students;
+    let day = this.formatDay(row.day);
+    let location = row.location;
+    let time = this.formatTime(row.startTime) + " - " + this.formatTime(row.endTime);
+    let date = new Date(row.startDate).toLocaleDateString("de-DE") + " - " + new Date(row.endDate).toLocaleDateString("de-DE");
+    let courseLecturer = row.lecturer;
+    let subject = "Email aus der Uni - eine deiner Kurse wurde angepasst";
+    let html = "<h3>Hallo, es gibt Änderungen bei deinem Kurs.</h3> <p>Hier sind die Informationen:</p> <p>Kursbezeichnung: " + courseName + "</p> <p>Wochentag: " + day + "</p> <p> Uhrzeit: " + time + "</p> <p> Ort: " + location + "</p> <p> Zeitraum: " + date + "</p> <p> Leitung: " + courseLecturer + "</p> <br> <p>Für mehr Informationen wende dich an sekretariat@uni.de</p>"
+
+    const messageData = {
+      studentsMails: courseStudentsList,
+      subject: subject,
+      html: html
+    }
+
+    await this.apiService.sendEmail(messageData);
+  }
+
+  formatDay(day: number) {
+    return ["Sonntag", "Montag", "Dienstag", "Mittwoch", "Donnerstag", "Freitag", "Samstag"][day]
+  }
 
   onNoClick(): void {
     this.dialogRef.close();
   }
+}
+
+function studentsMails(studentsMails: any) {
+  throw new Error('Function not implemented.');
 }

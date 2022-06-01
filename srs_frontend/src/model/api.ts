@@ -1,4 +1,5 @@
 export interface ICourse {
+    _id?: any,
     startTime: {
         hour: number;
         minutes: number;
@@ -12,7 +13,8 @@ export interface ICourse {
     day: number;
     course: string,
     location: string, 
-    lecturer: string
+    lecturer: string,
+    students?: string[]
 }
 
 enum Role {

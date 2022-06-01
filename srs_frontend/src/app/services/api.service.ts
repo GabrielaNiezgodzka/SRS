@@ -19,19 +19,23 @@ export class ApiService {
   }
 
   addCourse(data: ICourse) {
-    return firstValueFrom(this.httpClient.post('http://localhost:3000/addcourse', data, {observe: 'response', responseType: 'text'}));
+    return firstValueFrom(this.httpClient.post('http://localhost:3000/api/addcourse', data));
+  }
+
+  editCourse(data: ICourse) {
+    return firstValueFrom(this.httpClient.post('http://localhost:3000/api/editcourse', data));
   }
 
   deleteCourse(data: any) {
-    return firstValueFrom(this.httpClient.post('http://localhost:3000/deletecourse', data, {observe: 'response', responseType: 'text'}));
+    return firstValueFrom(this.httpClient.post('http://localhost:3000/api/deletecourse', data));
   }
 
-  sendEmail() {
-    return firstValueFrom(this.httpClient.post('http://localhost:3000/sendemail', {observe: 'response', responseType: 'text'}));
+  sendEmail(data: any) {
+    return firstValueFrom(this.httpClient.post('http://localhost:3000/api/sendemail', data ));
   }
 
   addStudent(data: any) {
-    return firstValueFrom(this.httpClient.post('http://localhost:3000/addstudent', data, {observe: 'response', responseType: 'text'}));
+    return firstValueFrom(this.httpClient.post('http://localhost:3000/api/addstudent', data));
   }
 
   login(data: ILoginRequest) {
