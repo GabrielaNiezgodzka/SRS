@@ -74,7 +74,12 @@ api.post("/deletecourse", async (req, res) => {
     res.send({});
 });
 
-api.post("/sendemail", async (req, res) => {
+api.post("/getcoursesforuser", async (req, res) => {
+    const studentMail = req.decodedJwt.email;
+    res.send(await db.courses().find({ students: studentMail }).toArray());
+});
+
+api.post("/sendemail", async (req) => {
     const transporter = nodemailer.createTransport({
         service: 'gmail',
         auth: {

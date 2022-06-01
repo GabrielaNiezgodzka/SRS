@@ -1,5 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { da } from 'date-fns/locale';
 import { firstValueFrom } from 'rxjs';
 import { ICourse, ILoginRequest, ILoginResponse, IRegisterUserData, IUser } from 'src/model/api';
 
@@ -12,6 +13,10 @@ export class ApiService {
 
   getCourses() {
     return firstValueFrom(this.httpClient.get<ICourse[]>('http://localhost:3000/api/courses'));
+  }
+
+  getCoursesForUser(data:any) {
+    return firstValueFrom(this.httpClient.post('http://localhost:3000/api/getcoursesforuser', data));
   }
 
   register(data: IRegisterUserData) {

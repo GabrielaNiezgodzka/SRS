@@ -1,4 +1,9 @@
 import { Component, OnInit } from '@angular/core';
+import { JwtHelperService } from '@auth0/angular-jwt';
+import { CalendarEvent } from 'angular-calendar';
+import { ICourse, IUser } from 'src/model/api';
+import { ApiService } from '../services/api.service';
+import { JwtService } from '../services/jwt.service';
 
 @Component({
   selector: 'app-timetable-content',
@@ -7,9 +12,17 @@ import { Component, OnInit } from '@angular/core';
 })
 export class TimetableContentComponent implements OnInit {
 
-  constructor() { }
+  viewDate = new Date();
+  events: CalendarEvent[] = [];
+  courses: ICourse[] = [];
 
-  ngOnInit(): void {
+  constructor(private apiService: ApiService, private jwtService: JwtService) { }
+
+  async ngOnInit(): Promise<void> {
+    this.courses = await this.apiService.getCoursesForUser(this.jwtService.getToken);
+    for (const course of this.courses) {
+      
+    }
+
   }
-
 }

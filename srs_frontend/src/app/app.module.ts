@@ -1,5 +1,5 @@
 import { HttpClientModule } from '@angular/common/http';
-import { NgModule } from '@angular/core';
+import { LOCALE_ID, NgModule } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -35,6 +35,21 @@ import { LoginComponent } from './user/login/login.component';
 import { RegisterComponent } from './user/register/register.component';
 import { UsersContentComponent } from './user/users-content/users-content.component';
 import {MatSnackBarModule} from '@angular/material/snack-bar';
+import {MatExpansionModule} from '@angular/material/expansion';
+import {MatDividerModule} from '@angular/material/divider';
+import { CalendarDateFormatter, CalendarModule, CalendarNativeDateFormatter, DateAdapter, DateFormatterParams } from 'angular-calendar';
+import { adapterFactory } from 'angular-calendar/date-adapters/date-fns';
+import { registerLocaleData } from '@angular/common';
+import localeDe from '@angular/common/locales/de';
+
+registerLocaleData(localeDe);
+
+class CustomDateFormatter extends CalendarNativeDateFormatter {
+  public override dayViewHour({date, locale}: DateFormatterParams): string {
+    // change this to return a different date format
+    return new Intl.DateTimeFormat(locale, {hour: 'numeric'}).format(date);
+  }
+}
 
 @NgModule({
   declarations: [
@@ -76,14 +91,20 @@ import {MatSnackBarModule} from '@angular/material/snack-bar';
     ReactiveFormsModule,
     MatTableModule,
     MatSnackBarModule,
+    MatExpansionModule,
+    MatDividerModule,
     JwtModule.forRoot({
       config: {
         tokenGetter: () => localStorage.getItem('token'),
         allowedDomains: ['localhost:3000'],
       },
     }),
+    CalendarModule.forRoot({
+      provide: DateAdapter,
+      useFactory: adapterFactory,
+    }),
   ],
-  providers: [],
+  providers: [{provide: LOCALE_ID, useValue: "de"}, {provide: CalendarDateFormatter, useClass: CustomDateFormatter}],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

@@ -267,7 +267,7 @@ export class CreateCourseDialog {
     await this.apiService.editCourse(course);
     this.sendEmailOnChange(course);
     this.dialogRef.close();
-    //window.location.reload();
+    window.location.reload();
   }
 
   async sendEmailOnChange(row: ICourse) {
